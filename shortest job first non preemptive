@@ -1,0 +1,96 @@
+#include <stdio.h>
+#include <stdlib.h>
+//constructor for all the ids in one place
+typedef struct
+{
+    int id;
+    int at;
+    int bt;
+    int wt;
+    int tat;
+    int ct;
+} P;
+
+// function for swapping
+
+void swap(P *a, P *b)
+{
+    P tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
+// bubble sort for sorting
+
+void sort(P pro[], int n)
+{
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            if (pro[j].bt > pro[j + 1].bt)
+            {
+                swap(&pro[j], &pro[j + 1]);
+            }
+        }
+    }
+}
+
+//function for cal CT
+
+void calT(P pro[], int n)
+{
+    pro[0].ct = pro[0].bt+pro[0].at;
+    pro[0].tat = pro[0].ct-pro[0].at;
+    pro[0].wt = pro[0].tat-pro[0].bt;
+
+    for (int i = 1; i < n; i++)
+    {
+        pro[i].ct = pro[i - 1].ct + pro[i].bt;
+        pro[i].tat = pro[i].ct-pro[i].at;
+        pro[i].wt = pro[i].tat -pro[i].bt;
+    }
+}
+// function for calculating Average WT
+float calAvgWT(P pro[], int n)
+{
+    float avg_wt = 0;
+    for (int i = 0; i < n; i++)
+    {
+        avg_wt += pro[i].wt;
+    }
+    return avg_wt / n;
+}
+
+int main()
+{
+    int n;
+    printf("Shortest Job First with Arrival Time with premption ");
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+
+    P pro[n];
+    //User input
+    for (int i = 0; i < n; i++)
+    {
+        printf("Arrival time for process P%d: ", i + 1);
+        scanf("%d", &pro[i].at);
+        printf("Burst time for process P%d: ", i + 1);
+        scanf("%d", &pro[i].bt);
+        pro[i].id = i + 1;
+    }
+    // call sorting, and calculatiing CT
+    sort(pro, n);
+    calT(pro, n);
+    //print details
+    printf("\nProcess\tArrival Time\tBurst Time\tCompletion Time\tTurnaround Time\tWaiting Time\n");
+    for (int i = 0; i < n; i++)
+    {
+        printf("P%d\t%d\t\t%d\t\t%d\t\t%d\t\t%d\n", pro[i].id, pro[i].at, pro[i].bt, pro[i].ct, 
+                        pro[i].tat, pro[i].wt);
+    }
+    float avg_wt = calAvgWT(pro, n);
+    printf("\nAverage Waiting Time: %.2f\n", avg_wt);
+    return 0;
+}
+
